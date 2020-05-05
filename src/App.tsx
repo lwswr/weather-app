@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { SearchForm } from "./SearchForm";
 
 export type WeatherProps = {
   id: string;
@@ -15,13 +16,12 @@ export type WeatherProps = {
 function WeatherApp() {
   const [weatherInfo, setWeatherInfo] = useState<WeatherProps>();
   const [search, setSearch] = useState("");
-  const [searchBuffer, setSearchBuffer] = useState("");
 
   useEffect(() => {
-    const getWeather = (city: string) => {
+    const getWeather = (cityReq: string) => {
       axios
         .get(
-          `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=b46010a9031dddd81c9d4a302cfac47e`
+          `http://api.openweathermap.org/data/2.5/weather?q=${cityReq}&appid=b46010a9031dddd81c9d4a302cfac47e`
         )
         .then((res) => {
           setWeatherInfo(res.data);
@@ -35,27 +35,17 @@ function WeatherApp() {
 
   return (
     <div>
-      <form
-        action="submit"
-        onSubmit={(event) => {
-          event.preventDefault();
-          setSearch(searchBuffer);
-        }}
-      >
-        <input
-          type="text"
-          placeholder="Enter a destination"
-          value={searchBuffer}
-          onChange={(event) => setSearchBuffer(event.target.value)}
-        />
-        <button type="submit">Search</button>
-      </form>
-      <h1>{search}</h1>
       <h1>Weather App</h1>
+      <SearchForm
+        submit={({ city }) => {
+          setSearch(city);
+          console.log(city);
+        }}
+      />
       <ul>
         <h3>Location: {weatherInfo?.name}</h3>
         <p>Wind Speed: {weatherInfo?.wind.speed}mph</p>
-        <p>{weatherInfo?.weather.description}</p>
+        <p>Description:{weatherInfo?.weather.description} (Not Working)</p>
       </ul>
     </div>
   );
