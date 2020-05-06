@@ -22,8 +22,9 @@ export const SearchForm = ({
     >
       <input
         type="text"
+        placeholder="What's the weather like in..."
         value={newSearch}
-        onChange={(e) => setNewSearch(e.target.value)}
+        onChange={(event) => setNewSearch(event.target.value)}
       />
       <button type="submit">Search</button>
     </form>

@@ -1,27 +1,45 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { SearchForm } from "./SearchForm";
+import { WeatherCard } from "./WeatherCard";
 
 export type WeatherProps = {
-  id: string;
-  name: string;
+  weather: [
+    {
+      main: string;
+      description: string;
+    }
+  ];
   wind: {
     speed: number;
   };
-  weather: {
-    description: string;
-  };
+  id: string;
+  name: string;
+};
+
+const initialWeatherInfoObj: WeatherProps = {
+  weather: [
+    {
+      main: "",
+      description: "",
+    },
+  ],
+  wind: {
+    speed: 0,
+  },
+  id: "",
+  name: "",
 };
 
 function WeatherApp() {
-  const [weatherInfo, setWeatherInfo] = useState<WeatherProps>();
-  const [search, setSearch] = useState("");
+  const [weatherInfo, setWeatherInfo] = useState(initialWeatherInfoObj);
+  const [searchLocation, setSearchLocation] = useState("");
 
   useEffect(() => {
-    const getWeather = (cityReq: string) => {
+    const getWeather = (cityRequest: string) => {
       axios
         .get(
-          `http://api.openweathermap.org/data/2.5/weather?q=${cityReq}&appid=b46010a9031dddd81c9d4a302cfac47e`
+          `http://api.openweathermap.org/data/2.5/weather?q=${cityRequest}&appid=b46010a9031dddd81c9d4a302cfac47e`
         )
         .then((res) => {
           setWeatherInfo(res.data);
@@ -30,23 +48,18 @@ function WeatherApp() {
           console.log("error", err);
         });
     };
-    getWeather(search);
-  });
+    getWeather(searchLocation);
+  }, [searchLocation]);
 
   return (
     <div>
       <h1>Weather App</h1>
       <SearchForm
         submit={({ city }) => {
-          setSearch(city);
-          console.log(city);
+          setSearchLocation(city);
         }}
       />
-      <ul>
-        <h3>Location: {weatherInfo?.name}</h3>
-        <p>Wind Speed: {weatherInfo?.wind.speed}mph</p>
-        <p>Description:{weatherInfo?.weather.description} (Not Working)</p>
-      </ul>
+      <WeatherCard weatherCardProps={weatherInfo} />
     </div>
   );
 }
