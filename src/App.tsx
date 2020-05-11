@@ -2,33 +2,94 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { SearchForm } from "./SearchForm";
 import { WeatherCard } from "./WeatherCard";
+import styled from "styled-components";
+
+const MainContainer = styled.div`
+  font-family: sans-serif;
+  font-weight: 100;
+  background: #49515e;
+  color: white;
+  text-align: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+`;
+
+const H1 = styled.h1`
+  font-size: 3rem;
+  font-weight: 100;
+`;
 
 export type WeatherProps = {
+  coord: { lon: number; lat: number };
   weather: [
     {
+      id: number;
       main: string;
       description: string;
+      icon: String;
     }
   ];
-  wind: {
-    speed: number;
+  base: string;
+  main: {
+    temp: number;
+    pressure: number;
+    humidity: number;
+    temp_min: number;
+    temp_max: number;
   };
-  id: string;
+  visibility: number;
+  wind: { speed: number; deg: number };
+  clouds: { all: number };
+  dt: number;
+  sys: {
+    type: number;
+    id: number;
+    message: number;
+    country: string;
+    sunrise: number;
+    sunset: number;
+  };
+  id: number;
   name: string;
+  cod: number;
 };
 
 const initialWeatherInfoObj: WeatherProps = {
+  coord: { lon: 0, lat: 0 },
   weather: [
     {
+      id: 0,
       main: "",
       description: "",
+      icon: "",
     },
   ],
-  wind: {
-    speed: 0,
+  base: "",
+  main: {
+    temp: 0,
+    pressure: 0,
+    humidity: 0,
+    temp_min: 0,
+    temp_max: 0,
   },
-  id: "",
+  visibility: 0,
+  wind: { speed: 0, deg: 0 },
+  clouds: { all: 0 },
+  dt: 0,
+  sys: {
+    type: 0,
+    id: 0,
+    message: 0,
+    country: "",
+    sunrise: 0,
+    sunset: 0,
+  },
+  id: 0,
   name: "",
+  cod: 0,
 };
 
 function WeatherApp() {
@@ -52,15 +113,15 @@ function WeatherApp() {
   }, [searchLocation]);
 
   return (
-    <div>
-      <h1>Weather App</h1>
+    <MainContainer>
+      <H1>WEATHER APP</H1>
       <SearchForm
         submit={({ city }) => {
           setSearchLocation(city);
         }}
       />
       <WeatherCard weatherCardProps={weatherInfo} />
-    </div>
+    </MainContainer>
   );
 }
 
