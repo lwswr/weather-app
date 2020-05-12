@@ -29,7 +29,7 @@ export type WeatherProps = {
       id: number;
       main: string;
       description: string;
-      icon: String;
+      icon: string;
     }
   ];
   base: string;
