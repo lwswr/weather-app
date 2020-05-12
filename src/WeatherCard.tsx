@@ -30,7 +30,7 @@ export const WeatherCard = ({
   weatherCardProps: WeatherProps;
 }) => {
   const celciusTemp = celciusConvertion(weatherCardProps.main.temp).toFixed(0);
-  const imageDimension = 200;
+  const imageDimension = "200";
 
   return (
     <Card>
