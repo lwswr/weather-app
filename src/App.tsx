@@ -109,7 +109,9 @@ function WeatherApp() {
           console.log("error", err);
         });
     };
-    getWeather(searchLocation);
+    if (searchLocation !== "") {
+      getWeather(searchLocation);
+    }
   }, [searchLocation]);
 
   return (
