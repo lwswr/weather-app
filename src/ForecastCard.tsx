@@ -43,6 +43,13 @@ export const ForecastCard = ({
 }: {
   forecastCardProps: ForecastProps;
 }) => {
+  console.log(
+    firstDayString,
+    secondDayString,
+    thirdDayString,
+    forthDayString,
+    fifthDayString
+  );
   return (
     <ForecastList>
       <ul>
