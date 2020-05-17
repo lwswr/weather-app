@@ -20,7 +20,11 @@ const TempBox = styled.div`
   margin: 25px 50px;
 `;
 
-function celciusConvertion(x: number) {
+const IconBox = styled.img`
+  margin: auto;
+`;
+
+export function celciusConvertion(x: number) {
   return x - 273.15;
 }
 
@@ -34,7 +38,7 @@ export const WeatherCard = ({
 
   return (
     <Card>
-      <img
+      <IconBox
         src={`http://openweathermap.org/img/wn/${weatherCardProps.weather[0].icon}@2x.png`}
         alt=""
         width={imageDimension}
@@ -42,8 +46,7 @@ export const WeatherCard = ({
       />
       <TempBox>{celciusTemp}°C</TempBox>
       <h3>{weatherCardProps.name}</h3>
-      <h4>{weatherCardProps.weather[0].main}</h4>
-      <p>Description: {weatherCardProps.weather[0].description}</p>
+      <p>{weatherCardProps.weather[0].description}</p>
       <p>Humidity: {weatherCardProps.main.humidity}%</p>
       <p>Wind Speed: {weatherCardProps.wind.speed}mph</p>
     </Card>
