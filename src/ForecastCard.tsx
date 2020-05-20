@@ -19,7 +19,7 @@ const incrementDate = (value: number) => {
   const newDate =
     currentDate.getFullYear() +
     "-" +
-    formatNumber(currentDate.getMonth()) +
+    formatNumber(currentDate.getMonth() + 1) +
     "-" +
     formatNumber(currentDate.getDate() + value) +
     " 12:00:00";
@@ -43,13 +43,12 @@ export const ForecastCard = ({
 }: {
   forecastCardProps: ForecastProps;
 }) => {
-  console.log(
-    firstDayString,
-    secondDayString,
-    thirdDayString,
-    forthDayString,
-    fifthDayString
+  const resultItem = forecastCardProps.list.filter(
+    (item) => item.dt_txt === forthDayString
   );
+
+  console.log(resultItem);
+
   return (
     <ForecastList>
       <ul>

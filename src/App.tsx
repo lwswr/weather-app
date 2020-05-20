@@ -554,6 +554,7 @@ function WeatherApp() {
           setSearchLocation(city);
         }}
       />
+
       <WeatherCard weatherCardProps={weatherInfo} />
       <ForecastCard forecastCardProps={forecastInfo} />
     </MainContainer>
