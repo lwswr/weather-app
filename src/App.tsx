@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { SearchForm } from "./SearchForm";
 import { WeatherCard } from "./WeatherCard";
-import { ForecastCard } from "./ForecastCard";
+import { ForecastWindow } from "./ForecastWindow";
 import styled from "styled-components";
 
 const MainContainer = styled.div`
@@ -22,6 +22,34 @@ const H1 = styled.h1`
   font-size: 3rem;
   font-weight: 100;
 `;
+
+const formatNumber = (value: number) => {
+  if (value <= 9) {
+    return "0" + value;
+  } else {
+    return value;
+  }
+};
+
+const incrementDate = (value: number) => {
+  const currentDate = new Date();
+  const newDate =
+    currentDate.getFullYear() +
+    "-" +
+    formatNumber(currentDate.getMonth() + 1) +
+    "-" +
+    formatNumber(currentDate.getDate() + value) +
+    " 12:00:00";
+  return newDate;
+};
+
+const firstDay = incrementDate(1);
+const secondDay = incrementDate(2);
+const thirdDay = incrementDate(3);
+
+const firstDayString = firstDay.toString();
+const secondDayString = secondDay.toString();
+const thirdDayString = thirdDay.toString();
 
 // type declarations
 export type WeatherProps = {
@@ -59,209 +87,44 @@ export type WeatherProps = {
   cod: number;
 };
 
-export type ForecastProps = {
-  list: [
+export type Forecast = {
+  dt: number;
+  main: {
+    temp: number;
+    temp_min: number;
+    temp_max: number;
+    pressure: number;
+    sea_level: number;
+    grnd_level: number;
+    humidity: number;
+    temp_kf: number;
+  };
+  weather: [
     {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
-    },
-    {
-      main: { temp: number };
-      weather: [{ id: number; icon: string }];
-      dt_txt: string;
+      id: number;
+      main: string;
+      description: string;
+      icon: string;
     }
   ];
+  clouds: { all: number };
+  wind: { speed: number; deg: number };
+  snow: {};
+  sys: { pod: string };
+  dt_txt: string;
+};
+
+export type ForecastProps = {
+  cod: string;
+  message: number;
+  cnt: number;
+  list: Forecast[];
+  city: {
+    id: number;
+    name: string;
+    coord: { lat: number; lon: number };
+    country: string;
+  };
 };
 
 // initialising properties
@@ -300,214 +163,49 @@ const initialWeatherInfoObj: WeatherProps = {
   cod: 0,
 };
 
-const initialForecastInfoObj: ForecastProps = {
-  list: [
+const initialForecastDataObj: Forecast = {
+  dt: 0,
+  main: {
+    temp: 0,
+    temp_min: 0,
+    temp_max: 0,
+    pressure: 0,
+    sea_level: 0,
+    grnd_level: 0,
+    humidity: 0,
+    temp_kf: 0,
+  },
+  weather: [
     {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
-    },
-    {
-      main: { temp: 0 },
-      weather: [{ id: 0, icon: "" }],
-      dt_txt: "",
+      id: 0,
+      main: "",
+      description: "",
+      icon: "",
     },
   ],
+  clouds: { all: 0 },
+  wind: { speed: 0, deg: 0 },
+  snow: {},
+  sys: { pod: "" },
+  dt_txt: "",
+};
+
+const initialForecastObj: ForecastProps = {
+  cod: "",
+  message: 0,
+  cnt: 0,
+  list: [initialForecastDataObj],
+  city: {
+    id: 0,
+    name: "",
+    coord: { lat: 0, lon: 0 },
+    country: "",
+  },
 };
 
 function WeatherApp() {
   // local variables
-  const [forecastInfo, setForecastInfo] = useState(initialForecastInfoObj);
+  const [forecastInfo, setForecastInfo] = useState(initialForecastObj);
   const [weatherInfo, setWeatherInfo] = useState(initialWeatherInfoObj);
   const [searchLocation, setSearchLocation] = useState("");
 
@@ -546,6 +244,18 @@ function WeatherApp() {
     }
   }, [searchLocation]);
 
+  const resultDay1 = forecastInfo.list.filter(
+    (item) => item.dt_txt === firstDayString
+  );
+
+  const resultDay2 = forecastInfo.list.filter(
+    (item) => item.dt_txt === secondDayString
+  );
+
+  const resultDay3 = forecastInfo.list.filter(
+    (item) => item.dt_txt === thirdDayString
+  );
+
   return (
     <MainContainer>
       <H1>WEATHER APP</H1>
@@ -556,7 +266,11 @@ function WeatherApp() {
       />
 
       <WeatherCard weatherCardProps={weatherInfo} />
-      <ForecastCard forecastCardProps={forecastInfo} />
+      <ForecastWindow
+        dayOneForecast={resultDay1}
+        dayTwoForecast={resultDay2}
+        dayThreeForecast={resultDay3}
+      />
     </MainContainer>
   );
 }

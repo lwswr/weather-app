@@ -1,63 +1,22 @@
 import * as React from "react";
 import styled from "styled-components";
-import { ForecastProps } from "./App";
+import { Forecast } from "./App";
 
-const ForecastList = styled.div`
+const ForecastCardStyle = styled.div`
   display: inline-flex;
 `;
-
-const formatNumber = (value: number) => {
-  if (value <= 9) {
-    return "0" + value;
-  } else {
-    return value;
-  }
-};
-
-const incrementDate = (value: number) => {
-  const currentDate = new Date();
-  const newDate =
-    currentDate.getFullYear() +
-    "-" +
-    formatNumber(currentDate.getMonth() + 1) +
-    "-" +
-    formatNumber(currentDate.getDate() + value) +
-    " 12:00:00";
-  return newDate;
-};
-
-const firstDay = incrementDate(1);
-const secondDay = incrementDate(2);
-const thirdDay = incrementDate(3);
-const forthDay = incrementDate(4);
-const fifthDay = incrementDate(5);
-
-const firstDayString = firstDay.toString();
-const secondDayString = secondDay.toString();
-const thirdDayString = thirdDay.toString();
-const forthDayString = forthDay.toString();
-const fifthDayString = fifthDay.toString();
 
 export const ForecastCard = ({
   forecastCardProps,
 }: {
-  forecastCardProps: ForecastProps;
+  forecastCardProps: Forecast[];
 }) => {
-  const resultItem = forecastCardProps.list.filter(
-    (item) => item.dt_txt === forthDayString
-  );
-
-  console.log(resultItem);
-
   return (
-    <ForecastList>
+    <ForecastCardStyle>
       <ul>
-        <li>{firstDayString}</li>
-        <li>{secondDayString}</li>
-        <li>{thirdDayString}</li>
-        <li>{forthDayString}</li>
-        <li>{fifthDayString}</li>
+        <li>{forecastCardProps[0].dt_txt}</li>
+        <li>{forecastCardProps[0].main.temp}</li>
       </ul>
-    </ForecastList>
+    </ForecastCardStyle>
   );
 };
