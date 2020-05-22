@@ -1,5 +1,5 @@
 import * as React from "react";
-import { WeatherProps } from "./App";
+import { WeatherResponse } from "./App";
 import styled from "styled-components";
 
 const Card = styled.div`
@@ -31,7 +31,7 @@ export function celciusConvertion(x: number) {
 export const WeatherCard = ({
   weatherCardProps,
 }: {
-  weatherCardProps: WeatherProps;
+  weatherCardProps: WeatherResponse;
 }) => {
   const celciusTemp = celciusConvertion(weatherCardProps.main.temp).toFixed(0);
   const imageDimension = "200";
