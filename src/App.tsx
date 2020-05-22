@@ -187,7 +187,7 @@ const initialForecastDataObj: Forecast = {
   wind: { speed: 0, deg: 0 },
   snow: {},
   sys: { pod: "" },
-  dt_txt: "",
+  dt_txt: firstDayString,
 };
 
 const initialForecastObj: ForecastProps = {
@@ -207,7 +207,7 @@ function WeatherApp() {
   // local variables
   const [forecastInfo, setForecastInfo] = useState(initialForecastObj);
   const [weatherInfo, setWeatherInfo] = useState(initialWeatherInfoObj);
-  const [searchLocation, setSearchLocation] = useState("");
+  const [searchLocation, setSearchLocation] = useState("London");
 
   // call to bouth APIs
   useEffect(() => {
@@ -264,7 +264,6 @@ function WeatherApp() {
           setSearchLocation(city);
         }}
       />
-
       <WeatherCard weatherCardProps={weatherInfo} />
       <ForecastWindow
         dayOneForecast={resultDay1}

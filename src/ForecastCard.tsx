@@ -14,7 +14,6 @@ export const ForecastCard = ({
   return (
     <ForecastCardStyle>
       <ul>
-        <li>{forecastCardProps[0].dt_txt}</li>
         <li>{forecastCardProps[0].main.temp}</li>
       </ul>
     </ForecastCardStyle>
