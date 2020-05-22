@@ -4,6 +4,8 @@ import { SearchForm } from "./SearchForm";
 import { WeatherCard } from "./WeatherCard";
 import { ForecastWindow } from "./ForecastWindow";
 import styled from "styled-components";
+// my favourite library for manipulating dates
+import { isSameDay, addDays } from "date-fns";
 
 const MainContainer = styled.div`
   font-family: sans-serif;
@@ -31,28 +33,16 @@ const formatNumber = (value: number) => {
   }
 };
 
-const incrementDate = (value: number) => {
-  const currentDate = new Date();
-  const newDate =
-    currentDate.getFullYear() +
-    "-" +
-    formatNumber(currentDate.getMonth() + 1) +
-    "-" +
-    formatNumber(currentDate.getDate() + value) +
-    " 12:00:00";
-  return newDate;
+const incrementDate = (value: number, date = new Date()) => {
+  return addDays(date, value);
 };
 
 const firstDay = incrementDate(1);
 const secondDay = incrementDate(2);
 const thirdDay = incrementDate(3);
 
-const firstDayString = firstDay.toString();
-const secondDayString = secondDay.toString();
-const thirdDayString = thirdDay.toString();
-
 // type declarations
-export type WeatherProps = {
+export type WeatherResponse = {
   coord: { lon: number; lat: number };
   weather: [
     {
@@ -114,7 +104,7 @@ export type Forecast = {
   dt_txt: string;
 };
 
-export type ForecastProps = {
+export type ForecastResponse = {
   cod: string;
   message: number;
   cnt: number;
@@ -126,87 +116,14 @@ export type ForecastProps = {
     country: string;
   };
 };
-
-// initialising properties
-const initialWeatherInfoObj: WeatherProps = {
-  coord: { lon: 0, lat: 0 },
-  weather: [
-    {
-      id: 0,
-      main: "",
-      description: "",
-      icon: "",
-    },
-  ],
-  base: "",
-  main: {
-    temp: 0,
-    pressure: 0,
-    humidity: 0,
-    temp_min: 0,
-    temp_max: 0,
-  },
-  visibility: 0,
-  wind: { speed: 0, deg: 0 },
-  clouds: { all: 0 },
-  dt: 0,
-  sys: {
-    type: 0,
-    id: 0,
-    message: 0,
-    country: "",
-    sunrise: 0,
-    sunset: 0,
-  },
-  id: 0,
-  name: "",
-  cod: 0,
-};
-
-const initialForecastDataObj: Forecast = {
-  dt: 0,
-  main: {
-    temp: 0,
-    temp_min: 0,
-    temp_max: 0,
-    pressure: 0,
-    sea_level: 0,
-    grnd_level: 0,
-    humidity: 0,
-    temp_kf: 0,
-  },
-  weather: [
-    {
-      id: 0,
-      main: "",
-      description: "",
-      icon: "",
-    },
-  ],
-  clouds: { all: 0 },
-  wind: { speed: 0, deg: 0 },
-  snow: {},
-  sys: { pod: "" },
-  dt_txt: firstDayString,
-};
-
-const initialForecastObj: ForecastProps = {
-  cod: "",
-  message: 0,
-  cnt: 0,
-  list: [initialForecastDataObj],
-  city: {
-    id: 0,
-    name: "",
-    coord: { lat: 0, lon: 0 },
-    country: "",
-  },
-};
-
 function WeatherApp() {
   // local variables
-  const [forecastInfo, setForecastInfo] = useState(initialForecastObj);
-  const [weatherInfo, setWeatherInfo] = useState(initialWeatherInfoObj);
+  const [forecastInfo, setForecastInfo] = useState<
+    ForecastResponse | undefined
+  >(undefined);
+  const [weatherInfo, setWeatherInfo] = useState<WeatherResponse | undefined>(
+    undefined
+  );
   const [searchLocation, setSearchLocation] = useState("London");
 
   // call to bouth APIs
@@ -214,7 +131,7 @@ function WeatherApp() {
     // function to get Current Weather API using cityRequest prop assigned from input field
     const getWeather = (cityRequest: string) => {
       axios
-        .get(
+        .get<WeatherResponse>(
           `http://api.openweathermap.org/data/2.5/weather?q=${cityRequest}&appid=b46010a9031dddd81c9d4a302cfac47e`
         )
         .then((response) => {
@@ -227,7 +144,7 @@ function WeatherApp() {
     // function to get 5 day 3 hourly forecast API using cityRequest prop assigned from input field
     const getForecast = (cityRequest: string) => {
       axios
-        .get(
+        .get<ForecastResponse>(
           `http://api.openweathermap.org/data/2.5/forecast?q=${cityRequest}&appid=b46010a9031dddd81c9d4a302cfac47e`
         )
         .then((response) => {
@@ -244,16 +161,18 @@ function WeatherApp() {
     }
   }, [searchLocation]);
 
-  const resultDay1 = forecastInfo.list.filter(
-    (item) => item.dt_txt === firstDayString
-  );
+  // because we said that our state can be undefined | T (whatever value when it's not defined)
+  // we need to check if it is defined!
+  if (!forecastInfo || !weatherInfo) return null;
 
-  const resultDay2 = forecastInfo.list.filter(
-    (item) => item.dt_txt === secondDayString
+  const resultDay1 = forecastInfo.list.filter((item) =>
+    isSameDay(new Date(item.dt_txt), firstDay)
   );
-
-  const resultDay3 = forecastInfo.list.filter(
-    (item) => item.dt_txt === thirdDayString
+  const resultDay2 = forecastInfo.list.filter((item) =>
+    isSameDay(new Date(item.dt_txt), secondDay)
+  );
+  const resultDay3 = forecastInfo.list.filter((item) =>
+    isSameDay(new Date(item.dt_txt), thirdDay)
   );
 
   return (
