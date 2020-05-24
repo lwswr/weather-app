@@ -8,7 +8,6 @@ import styled from "styled-components";
 import { isSameDay, addDays, setHours, setMinutes, setSeconds } from "date-fns";
 import { isSameHour } from "date-fns/esm";
 
-
 const MainContainer = styled.div`
   font-family: sans-serif;
   font-weight: 100;
@@ -28,11 +27,11 @@ const H1 = styled.h1`
   letter-spacing: 20px;
 `;
 
-
 // Adds amount of days required to date and sets time to 15:00:00
 const incrementDate = (value: number, date = new Date()) => {
-  return addDays(setHours(setMinutes(setSeconds(date, 0), 0), 15), value)
-  
+  return addDays(setHours(setMinutes(setSeconds(date, 0), 0), 15), value);
+};
+
 const firstDay = incrementDate(1);
 const secondDay = incrementDate(2);
 const thirdDay = incrementDate(3);
