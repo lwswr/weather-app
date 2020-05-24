@@ -6,7 +6,7 @@ import styled from "styled-components";
 const ForecastPanel = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-evenly;
   margin: 15px auto;
   width: 50%;
   background: rgb(38, 53, 64, 0.9);
@@ -18,30 +18,26 @@ export const ForecastWindow = ({
   dayOneForecast,
   dayTwoForecast,
   dayThreeForecast,
-  dayOneTitle,
-  dayTwoTitle,
-  dayThreeTitle,
+  weekdays,
 }: {
   dayOneForecast: Forecast[];
   dayTwoForecast: Forecast[];
   dayThreeForecast: Forecast[];
-  dayOneTitle: string;
-  dayTwoTitle: string;
-  dayThreeTitle: string;
+  weekdays: string[];
 }) => {
   return (
     <ForecastPanel>
       <ForecastCard
         forecastCardProps={dayOneForecast}
-        forecastCardTitle={dayOneTitle}
+        forecastCardTitle={weekdays[0]}
       />
       <ForecastCard
         forecastCardProps={dayTwoForecast}
-        forecastCardTitle={dayTwoTitle}
+        forecastCardTitle={weekdays[1]}
       />
       <ForecastCard
         forecastCardProps={dayThreeForecast}
-        forecastCardTitle={dayThreeTitle}
+        forecastCardTitle={weekdays[2]}
       />
     </ForecastPanel>
   );

@@ -29,11 +29,9 @@ const MainContainer = styled.div`
 
 const H1 = styled.h1`
   font-size: 35px;
-  font-weight: bolder;
+  font-weight: 1;
   letter-spacing: 20px;
 `;
-
-const daysOfTheWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 // Adds amount of days required to date and sets time to 15:00:00
 const incrementDate = (value: number, date = new Date()) => {
@@ -47,9 +45,13 @@ const secondDay = incrementDate(2);
 // 3 days from now
 const thirdDay = incrementDate(3);
 
-const day1 = daysOfTheWeek[getDay(firstDay)];
-const day2 = daysOfTheWeek[getDay(secondDay)];
-const day3 = daysOfTheWeek[getDay(thirdDay)];
+const daysOfTheWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+const weekdays: string[] = [
+  daysOfTheWeek[getDay(firstDay)],
+  daysOfTheWeek[getDay(secondDay)],
+  daysOfTheWeek[getDay(thirdDay)],
+];
 
 // type declarations
 export type WeatherResponse = {
@@ -192,7 +194,7 @@ function WeatherApp() {
   );
   return (
     <MainContainer>
-      <H1>WEATHER APP</H1>
+      <H1> • WEATHER • APP • </H1>
       <SearchForm
         submit={({ city }) => {
           setSearchLocation(city);
@@ -203,9 +205,7 @@ function WeatherApp() {
         dayOneForecast={resultDay1}
         dayTwoForecast={resultDay2}
         dayThreeForecast={resultDay3}
-        dayOneTitle={day1}
-        dayTwoTitle={day2}
-        dayThreeTitle={day3}
+        weekdays={weekdays}
       />
     </MainContainer>
   );
