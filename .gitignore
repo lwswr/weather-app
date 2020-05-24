@@ -22,5 +22,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+<<<<<<< HEAD
 .vscode/settings.json 
 
+=======
+.vscode/settings.json
+>>>>>>> 869824fc58e1b0ae7ba2225ffba88d92adbac1d8
