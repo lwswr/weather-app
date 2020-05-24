@@ -13,17 +13,24 @@ const ForecastCardStyle = styled.div`
 
 const ForecastCardIcon = styled.img``;
 
+const ForecastCardTitle = styled.h2`
+  text-align: center;
+`;
+
 function celciusConvertion(x: number) {
   return x - 273.15;
 }
 
 export const ForecastCard = ({
   forecastCardProps,
+  forecastCardTitle,
 }: {
   forecastCardProps: Forecast[];
+  forecastCardTitle: string;
 }) => {
   return (
     <ForecastCardStyle>
+      <ForecastCardTitle>{forecastCardTitle}</ForecastCardTitle>
       <ForecastCardIcon
         src={`http://openweathermap.org/img/wn/${forecastCardProps[0].weather[0].icon}@2x.png`}
         alt=""

@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import styled from "styled-components";
 import { SearchForm } from "./SearchForm";
 import { WeatherCard } from "./WeatherCard";
 import { ForecastWindow } from "./ForecastWindow";
-import styled from "styled-components";
-// my favourite library for manipulating dates
-import { isSameDay, addDays, setHours, setMinutes, setSeconds } from "date-fns";
+import {
+  isSameDay,
+  addDays,
+  setHours,
+  setMinutes,
+  setSeconds,
+  getDay,
+} from "date-fns";
 import { isSameHour } from "date-fns/esm";
 
 const MainContainer = styled.div`
@@ -27,14 +33,23 @@ const H1 = styled.h1`
   letter-spacing: 20px;
 `;
 
+const daysOfTheWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
 // Adds amount of days required to date and sets time to 15:00:00
 const incrementDate = (value: number, date = new Date()) => {
   return addDays(setHours(setMinutes(setSeconds(date, 0), 0), 15), value);
 };
 
+// Tomorrow
 const firstDay = incrementDate(1);
+// Day after Tomorrow
 const secondDay = incrementDate(2);
+// 3 days from now
 const thirdDay = incrementDate(3);
+
+const day1 = daysOfTheWeek[getDay(firstDay)];
+const day2 = daysOfTheWeek[getDay(secondDay)];
+const day3 = daysOfTheWeek[getDay(thirdDay)];
 
 // type declarations
 export type WeatherResponse = {
@@ -188,6 +203,9 @@ function WeatherApp() {
         dayOneForecast={resultDay1}
         dayTwoForecast={resultDay2}
         dayThreeForecast={resultDay3}
+        dayOneTitle={day1}
+        dayTwoTitle={day2}
+        dayThreeTitle={day3}
       />
     </MainContainer>
   );

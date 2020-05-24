@@ -18,16 +18,31 @@ export const ForecastWindow = ({
   dayOneForecast,
   dayTwoForecast,
   dayThreeForecast,
+  dayOneTitle,
+  dayTwoTitle,
+  dayThreeTitle,
 }: {
   dayOneForecast: Forecast[];
   dayTwoForecast: Forecast[];
   dayThreeForecast: Forecast[];
+  dayOneTitle: string;
+  dayTwoTitle: string;
+  dayThreeTitle: string;
 }) => {
   return (
     <ForecastPanel>
-      <ForecastCard forecastCardProps={dayOneForecast} />
-      <ForecastCard forecastCardProps={dayTwoForecast} />
-      <ForecastCard forecastCardProps={dayThreeForecast} />
+      <ForecastCard
+        forecastCardProps={dayOneForecast}
+        forecastCardTitle={dayOneTitle}
+      />
+      <ForecastCard
+        forecastCardProps={dayTwoForecast}
+        forecastCardTitle={dayTwoTitle}
+      />
+      <ForecastCard
+        forecastCardProps={dayThreeForecast}
+        forecastCardTitle={dayThreeTitle}
+      />
     </ForecastPanel>
   );
 };
