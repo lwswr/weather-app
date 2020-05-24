@@ -15,28 +15,24 @@ const ForecastPanel = styled.div`
 `;
 
 export const ForecastWindow = ({
-  dayOneForecast,
-  dayTwoForecast,
-  dayThreeForecast,
+  forecasts,
   weekdays,
 }: {
-  dayOneForecast: Forecast[];
-  dayTwoForecast: Forecast[];
-  dayThreeForecast: Forecast[];
+  forecasts: Forecast[][];
   weekdays: string[];
 }) => {
   return (
     <ForecastPanel>
       <ForecastCard
-        forecastCardProps={dayOneForecast}
+        forecastCardProps={forecasts[0]}
         forecastCardTitle={weekdays[0]}
       />
       <ForecastCard
-        forecastCardProps={dayTwoForecast}
+        forecastCardProps={forecasts[1]}
         forecastCardTitle={weekdays[1]}
       />
       <ForecastCard
-        forecastCardProps={dayThreeForecast}
+        forecastCardProps={forecasts[2]}
         forecastCardTitle={weekdays[2]}
       />
     </ForecastPanel>

@@ -14,9 +14,14 @@ import {
 } from "date-fns";
 import { isSameHour } from "date-fns/esm";
 
+// Full Cloud https://images.unsplash.com/photo-1546706872-9c90b8d0c94f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80
+// Partly Cloudy https://images.unsplash.com/photo-1579461182805-98ac523af8f6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2300&q=80
+// Full Sun https://images.unsplash.com/photo-1525490829609-d166ddb58678?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2249&q=80
+
 const MainContainer = styled.div`
   font-family: sans-serif;
   font-weight: 100;
+  /* needs a method that checks the value of the api response after it's filtered to determine which background image is set */
   background-image: url("https://www.oysterworldwide.com/panel/wp-content/uploads/2018/11/Destination_New_Zealand.jpg");
   color: white;
   text-align: center;
@@ -38,11 +43,8 @@ const incrementDate = (value: number, date = new Date()) => {
   return addDays(setHours(setMinutes(setSeconds(date, 0), 0), 15), value);
 };
 
-// Tomorrow
 const firstDay = incrementDate(1);
-// Day after Tomorrow
 const secondDay = incrementDate(2);
-// 3 days from now
 const thirdDay = incrementDate(3);
 
 const daysOfTheWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -177,36 +179,30 @@ function WeatherApp() {
   // we need to check if it is defined!
   if (!forecastInfo || !weatherInfo) return null;
 
-  const resultDay1 = forecastInfo.list.filter(
-    (item) =>
-      isSameDay(new Date(item.dt_txt), firstDay) &&
-      isSameHour(new Date(item.dt_txt), firstDay)
-  );
-  const resultDay2 = forecastInfo.list.filter(
-    (item) =>
-      isSameDay(new Date(item.dt_txt), secondDay) &&
-      isSameHour(new Date(item.dt_txt), secondDay)
-  );
-  const resultDay3 = forecastInfo.list.filter(
-    (item) =>
-      isSameDay(new Date(item.dt_txt), thirdDay) &&
-      isSameHour(new Date(item.dt_txt), thirdDay)
-  );
+  const checkTimeAndFilter = (day: Date) => {
+    return forecastInfo.list.filter(
+      (item) =>
+        isSameDay(new Date(item.dt_txt), day) &&
+        isSameHour(new Date(item.dt_txt), day)
+    );
+  };
+
+  const resultDays = [
+    checkTimeAndFilter(firstDay),
+    checkTimeAndFilter(secondDay),
+    checkTimeAndFilter(thirdDay),
+  ];
+
   return (
     <MainContainer>
-      <H1> • WEATHER • APP • </H1>
+      <H1> • WEATHER APP • </H1>
       <SearchForm
         submit={({ city }) => {
           setSearchLocation(city);
         }}
       />
       <WeatherCard weatherCardProps={weatherInfo} />
-      <ForecastWindow
-        dayOneForecast={resultDay1}
-        dayTwoForecast={resultDay2}
-        dayThreeForecast={resultDay3}
-        weekdays={weekdays}
-      />
+      <ForecastWindow forecasts={resultDays} weekdays={weekdays} />
     </MainContainer>
   );
 }
