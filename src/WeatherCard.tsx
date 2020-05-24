@@ -1,12 +1,12 @@
 import * as React from "react";
-import { WeatherProps } from "./App";
+import { WeatherResponse } from "./App";
 import styled from "styled-components";
 
 const Card = styled.div`
-  background: white;
-  border-radius: 30px;
-  color: #49515e;
-  padding: 40px;
+  background: rgb(38, 53, 64, 0.9);
+  border-radius: 50px 50px 5px 5px;
+  color: white;
+  padding: 5px;
   margin: auto;
   width: 50%;
   display: flex;
@@ -14,37 +14,45 @@ const Card = styled.div`
   align-content: center;
 `;
 
+const MainInfo = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
 const TempBox = styled.div`
   text-align: center;
-  font-size: 4rem;
-  margin: 25px 50px;
+  font-size: 6rem;
+  margin: 5px 10px;
 `;
 
 const IconBox = styled.img`
   margin: auto;
 `;
 
-export function celciusConvertion(x: number) {
+function celciusConvertion(x: number) {
   return x - 273.15;
 }
 
 export const WeatherCard = ({
   weatherCardProps,
 }: {
-  weatherCardProps: WeatherProps;
+  weatherCardProps: WeatherResponse;
 }) => {
   const celciusTemp = celciusConvertion(weatherCardProps.main.temp).toFixed(0);
   const imageDimension = "200";
 
   return (
     <Card>
-      <IconBox
-        src={`http://openweathermap.org/img/wn/${weatherCardProps.weather[0].icon}@2x.png`}
-        alt=""
-        width={imageDimension}
-        height={imageDimension}
-      />
-      <TempBox>{celciusTemp}°C</TempBox>
+      <MainInfo>
+        <IconBox
+          src={`http://openweathermap.org/img/wn/${weatherCardProps.weather[0].icon}@2x.png`}
+          alt=""
+          width={imageDimension}
+          height={imageDimension}
+        />
+        <TempBox>{celciusTemp}°C</TempBox>
+      </MainInfo>
+
       <h3>{weatherCardProps.name}</h3>
       <p>{weatherCardProps.weather[0].description}</p>
       <p>Humidity: {weatherCardProps.main.humidity}%</p>

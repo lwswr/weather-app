@@ -2,7 +2,9 @@ import * as React from "react";
 import styled from "styled-components";
 
 const Form = styled.form`
-  margin: 20px 20px;
+  margin: auto;
+  width: 50%;
+  padding: 10px;
 `;
 
 const SubmitButton = styled.button`
@@ -11,7 +13,7 @@ const SubmitButton = styled.button`
   border-radius: 15px;
   border: 2px solid white;
   padding: 7px 14px;
-  background: #49515e;
+  background: rgb(38, 53, 64, 0.7);
   color: white;
   transition: 0.2s ease-in-out;
   &:hover {
@@ -25,9 +27,9 @@ const InputField = styled.input`
   font-weight: 100;
   padding: 7px 14px;
   margin: 0px 20px;
-  width: 500px;
+  width: inherit;
   color: white;
-  background: #49515e;
+  background: none;
   outline: none;
   border-top: none;
   border-left: none;
