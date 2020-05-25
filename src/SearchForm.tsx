@@ -2,17 +2,18 @@ import * as React from "react";
 import styled from "styled-components";
 
 const Form = styled.form`
-  margin: auto;
+  margin: 25px auto;
   width: 50%;
   padding: 10px;
 `;
 
 const SubmitButton = styled.button`
-  font-size: 30px;
+  font-size: 20px;
+  letter-spacing: 5px;
   font-weight: 100;
   border-radius: 15px;
   border: 2px solid white;
-  padding: 7px 14px;
+  padding: 10px 20px;
   background: rgb(38, 53, 64, 0.7);
   color: white;
   transition: 0.2s ease-in-out;
@@ -63,7 +64,7 @@ export const SearchForm = ({
         value={newSearch}
         onChange={(e) => setNewSearch(e.target.value)}
       />
-      <SubmitButton type="submit">Search</SubmitButton>
+      <SubmitButton type="submit">SEARCH</SubmitButton>
     </Form>
   );
 };

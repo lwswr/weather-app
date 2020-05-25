@@ -7,26 +7,58 @@ const Card = styled.div`
   border-radius: 50px 50px 5px 5px;
   color: white;
   padding: 5px;
-  margin: auto;
+  margin: 0px auto;
   width: 50%;
-  display: flex;
-  flex-direction: column;
-  align-content: center;
 `;
 
 const MainInfo = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
 `;
 
+const MainInfoColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0px auto;
+`;
 const TempBox = styled.div`
   text-align: center;
-  font-size: 6rem;
-  margin: 5px 10px;
+  font-size: 5rem;
+  margin: 60px 0px;
+`;
+
+const CityName = styled.div`
+  font-size: 25px;
+  margin: 20px;
+`;
+
+const Description = styled.div`
+  font-size: 25px;
+  margin: 20px;
 `;
 
 const IconBox = styled.img`
   margin: auto;
+`;
+
+const ItemInfoTitle = styled.div`
+  font-size: 15px;
+  letter-spacing: 5px;
+  margin: 20px;
+`;
+
+const ItemInfoBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  letter-spacing: 3px;
+  margin-bottom: 20px;
+`;
+
+const ItemInfoData = styled.div`
+  font-size: 25px;
 `;
 
 function celciusConvertion(x: number) {
@@ -44,19 +76,32 @@ export const WeatherCard = ({
   return (
     <Card>
       <MainInfo>
-        <IconBox
-          src={`http://openweathermap.org/img/wn/${weatherCardProps.weather[0].icon}@2x.png`}
-          alt=""
-          width={imageDimension}
-          height={imageDimension}
-        />
-        <TempBox>{celciusTemp}°C</TempBox>
+        <MainInfoColumn>
+          <TempBox>{celciusTemp}°C</TempBox>
+          <CityName>
+            {weatherCardProps.name}, {weatherCardProps.sys.country}
+          </CityName>
+        </MainInfoColumn>
+        <MainInfoColumn>
+          <IconBox
+            src={`http://openweathermap.org/img/wn/${weatherCardProps.weather[0].icon}@2x.png`}
+            alt=""
+            width={imageDimension}
+            height={imageDimension}
+          />
+          <Description>{weatherCardProps.weather[0].description}</Description>
+        </MainInfoColumn>
+        <MainInfoColumn>
+          <ItemInfoBox>
+            <ItemInfoTitle>HUMIDITY</ItemInfoTitle>
+            <ItemInfoData>{weatherCardProps.main.humidity}%</ItemInfoData>
+          </ItemInfoBox>
+          <ItemInfoBox>
+            <ItemInfoTitle>WIND SPEED</ItemInfoTitle>
+            <ItemInfoData>{weatherCardProps.wind.speed}mph</ItemInfoData>
+          </ItemInfoBox>
+        </MainInfoColumn>
       </MainInfo>
-
-      <h3>{weatherCardProps.name}</h3>
-      <p>{weatherCardProps.weather[0].description}</p>
-      <p>Humidity: {weatherCardProps.main.humidity}%</p>
-      <p>Wind Speed: {weatherCardProps.wind.speed}mph</p>
     </Card>
   );
 };

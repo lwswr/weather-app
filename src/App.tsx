@@ -187,7 +187,7 @@ function WeatherApp() {
     );
   };
 
-  const resultDays = [
+  const resultDays: Forecast[][] = [
     checkTimeAndFilter(firstDay),
     checkTimeAndFilter(secondDay),
     checkTimeAndFilter(thirdDay),
