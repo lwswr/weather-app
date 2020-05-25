@@ -5,7 +5,7 @@ import { Forecast } from "./App";
 const ForecastCardStyle = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 10px;
+  margin: 30px 10px;
   padding: 10px 20px;
   border: 2px solid white;
   border-radius: 20px;
