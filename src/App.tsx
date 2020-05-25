@@ -32,9 +32,10 @@ const MainContainer = styled.div`
   bottom: 0;
 `;
 
-const H1 = styled.h1`
+const AppTitle = styled.div`
   font-size: 35px;
-  font-weight: 1;
+  font-weight: lighter;
+  padding: 50px 5px 10px 10px;
   letter-spacing: 20px;
 `;
 
@@ -47,7 +48,15 @@ const firstDay = incrementDate(1);
 const secondDay = incrementDate(2);
 const thirdDay = incrementDate(3);
 
-const daysOfTheWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const daysOfTheWeek: string[] = [
+  "Sun",
+  "Mon",
+  "Tue",
+  "Wed",
+  "Thu",
+  "Fri",
+  "Sat",
+];
 
 const weekdays: string[] = [
   daysOfTheWeek[getDay(firstDay)],
@@ -195,7 +204,7 @@ function WeatherApp() {
 
   return (
     <MainContainer>
-      <H1> • WEATHER APP • </H1>
+      <AppTitle> • WEATHER APP • </AppTitle>
       <SearchForm
         submit={({ city }) => {
           setSearchLocation(city);

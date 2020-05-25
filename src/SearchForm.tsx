@@ -5,6 +5,10 @@ const Form = styled.form`
   margin: 25px auto;
   width: 50%;
   padding: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 `;
 
 const SubmitButton = styled.button`
@@ -13,13 +17,13 @@ const SubmitButton = styled.button`
   font-weight: 100;
   border-radius: 15px;
   border: 2px solid white;
-  padding: 10px 20px;
+  padding: 12px 20px;
   background: rgb(38, 53, 64, 0.7);
   color: white;
   transition: 0.2s ease-in-out;
   &:hover {
     background: white;
-    color: #49515e;
+    color: rgb(38, 53, 64);
   }
 `;
 
@@ -30,12 +34,10 @@ const InputField = styled.input`
   margin: 0px 20px;
   width: inherit;
   color: white;
-  background: none;
+  background: rgb(38, 53, 64, 0.7);
   outline: none;
-  border-top: none;
-  border-left: none;
-  border-right: none;
-  border-bottom: 2px solid white;
+  border-radius: 15px;
+  border: none;
 `;
 
 export type SearchProps = {
