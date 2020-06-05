@@ -235,6 +235,7 @@ function App() {
 
   return (
     <MainContainer>
+      <AppTitle>WEATHER APP</AppTitle>
       <button
         onClick={() =>
           update({
@@ -244,11 +245,10 @@ function App() {
           })
         }
       >
-        {!state.authenticated ? "login" : "logout"}
+        {!state.authenticated ? "log in" : "log out"}
       </button>
       {state.authenticated ? (
         <div>
-          <AppTitle>WEATHER APP</AppTitle>
           <SearchForm
             submit={({ city }) => {
               setSearchLocation(city);
