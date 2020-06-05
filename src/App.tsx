@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { SearchForm } from "./SearchForm";
@@ -22,7 +22,7 @@ const MainContainer = styled.div`
   font-family: sans-serif;
   font-weight: 100;
   /* needs a method that checks the value of the api response after it's filtered to determine which background image is set */
-  background-image: url("https://www.oysterworldwide.com/panel/wp-content/uploads/2018/11/Destination_New_Zealand.jpg");
+  background-image: url("https://a-static.besthdwallpaper.com/new-zealand-natural-landscape-wallpaper-3554x1999-2934_53.jpg");
   color: white;
   text-align: center;
   position: absolute;
@@ -139,7 +139,38 @@ export type ForecastResponse = {
     country: string;
   };
 };
-function WeatherApp() {
+
+export type AuthState = {
+  authenticated: boolean;
+};
+
+export type AuthEvents =
+  | {
+      type: "logged in clicked";
+    }
+  | {
+      type: "logged out clicked";
+    };
+
+const reducer: React.Reducer<AuthState, AuthEvents> = (state, event) => {
+  switch (event?.type) {
+    case "logged in clicked": {
+      return {
+        ...state,
+        authenticated: true,
+      };
+    }
+    case "logged out clicked": {
+      return {
+        ...state,
+        authenticated: false,
+      };
+    }
+  }
+};
+
+function App() {
+  const [state, update] = useReducer(reducer, { authenticated: false });
   // local variables
   const [forecastInfo, setForecastInfo] = useState<
     ForecastResponse | undefined
@@ -204,16 +235,31 @@ function WeatherApp() {
 
   return (
     <MainContainer>
-      <AppTitle> • WEATHER APP • </AppTitle>
-      <SearchForm
-        submit={({ city }) => {
-          setSearchLocation(city);
-        }}
-      />
-      <WeatherCard weatherCardProps={weatherInfo} />
-      <ForecastWindow forecasts={resultDays} weekdays={weekdays} />
+      <button
+        onClick={() =>
+          update({
+            type: !state.authenticated
+              ? "logged in clicked"
+              : "logged out clicked",
+          })
+        }
+      >
+        {!state.authenticated ? "login" : "logout"}
+      </button>
+      {state.authenticated ? (
+        <div>
+          <AppTitle>WEATHER APP</AppTitle>
+          <SearchForm
+            submit={({ city }) => {
+              setSearchLocation(city);
+            }}
+          />
+          <WeatherCard weatherCardProps={weatherInfo} />
+          <ForecastWindow forecasts={resultDays} weekdays={weekdays} />
+        </div>
+      ) : null}
     </MainContainer>
   );
 }
 
-export default WeatherApp;
+export default App;

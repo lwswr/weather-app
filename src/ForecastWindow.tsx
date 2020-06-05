@@ -9,7 +9,7 @@ const ForecastPanel = styled.div`
   justify-content: space-evenly;
   margin: 15px auto;
   width: 50%;
-  background: rgb(38, 53, 64, 0.9);
+  background: rgb(164, 176, 189, 0.7);
   border-radius: 5px 5px 50px 50px;
   padding: 5px;
 `;

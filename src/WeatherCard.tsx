@@ -3,9 +3,9 @@ import { WeatherResponse } from "./App";
 import styled from "styled-components";
 
 const Card = styled.div`
-  background: rgb(38, 53, 64, 0.9);
+  background: rgb(164, 176, 189, 0.7);
   border-radius: 50px 50px 5px 5px;
-  color: white;
+  color: rgb(38, 53, 64);
   padding: 5px;
   margin: 0px auto;
   width: 50%;
@@ -31,23 +31,19 @@ const TempBox = styled.div`
 `;
 
 const CityName = styled.div`
+  text-align: center;
   font-size: 25px;
   margin: 20px;
 `;
 
 const Description = styled.div`
+  text-align: center;
   font-size: 25px;
   margin: 20px;
 `;
 
 const IconBox = styled.img`
   margin: auto;
-`;
-
-const ItemInfoTitle = styled.div`
-  font-size: 15px;
-  letter-spacing: 5px;
-  margin: 20px;
 `;
 
 const ItemInfoBox = styled.div`
@@ -57,8 +53,16 @@ const ItemInfoBox = styled.div`
   margin-bottom: 20px;
 `;
 
+const ItemInfoTitle = styled.div`
+  font-size: 15px;
+  text-align: center;
+  letter-spacing: 5px;
+  margin: 20px;
+`;
+
 const ItemInfoData = styled.div`
   font-size: 25px;
+  text-align: center;
 `;
 
 function celciusConvertion(x: number) {

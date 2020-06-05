@@ -7,7 +7,7 @@ const ForecastCardStyle = styled.div`
   flex-direction: column;
   margin: 30px 10px;
   padding: 10px 20px;
-  border: 2px solid white;
+  border: 2px solid rgb(38, 53, 64);
   border-radius: 20px;
 `;
 
