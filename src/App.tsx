@@ -39,6 +39,22 @@ const AppTitle = styled.div`
   letter-spacing: 20px;
 `;
 
+const LoginButton = styled.button`
+  font-size: 20px;
+  letter-spacing: 5px;
+  font-weight: 100;
+  border-radius: 15px;
+  border: 2px solid white;
+  padding: 12px 20px;
+  background: rgb(38, 53, 64, 0.7);
+  color: white;
+  transition: 0.2s ease-in-out;
+  &:hover {
+    background: white;
+    color: rgb(38, 53, 64);
+  }
+`;
+
 // Adds amount of days required to date and sets time to 15:00:00
 const incrementDate = (value: number, date = new Date()) => {
   return addDays(setHours(setMinutes(setSeconds(date, 0), 0), 15), value);
@@ -140,19 +156,29 @@ export type ForecastResponse = {
   };
 };
 
-export type AuthState = {
+export type AppState = {
   authenticated: boolean;
+  city: string;
 };
 
-export type AuthEvents =
+export type AppEvents =
   | {
       type: "logged in clicked";
     }
   | {
       type: "logged out clicked";
+    }
+  | {
+      type: "search location set";
+      payload: string;
     };
 
-const reducer: React.Reducer<AuthState, AuthEvents> = (state, event) => {
+const initialState = {
+  authenticated: false,
+  city: "London",
+};
+
+const reducer: React.Reducer<AppState, AppEvents> = (state, event) => {
   switch (event?.type) {
     case "logged in clicked": {
       return {
@@ -166,28 +192,34 @@ const reducer: React.Reducer<AuthState, AuthEvents> = (state, event) => {
         authenticated: false,
       };
     }
+    case "search location set": {
+      return {
+        ...state,
+        city: event.payload,
+      };
+    }
   }
 };
 
 function App() {
-  const [state, update] = useReducer(reducer, { authenticated: false });
-  // local variables
+  const [state, update] = useReducer(reducer, initialState);
   const [forecastInfo, setForecastInfo] = useState<
     ForecastResponse | undefined
   >(undefined);
   const [weatherInfo, setWeatherInfo] = useState<WeatherResponse | undefined>(
     undefined
   );
-  const [searchLocation, setSearchLocation] = useState("London");
+  // const [searchLocation, setSearchLocation] = useState("London");
+
+  const weatherURL = `http://api.openweathermap.org/data/2.5/weather?q=${state.city}&appid=b46010a9031dddd81c9d4a302cfac47e`;
+  const forecastURL = `http://api.openweathermap.org/data/2.5/forecast?q=${state.city}&appid=b46010a9031dddd81c9d4a302cfac47e`;
 
   // call to bouth APIs
   useEffect(() => {
     // function to get Current Weather API using cityRequest prop assigned from input field
-    const getWeather = (cityRequest: string) => {
+    const getWeather = () => {
       axios
-        .get<WeatherResponse>(
-          `http://api.openweathermap.org/data/2.5/weather?q=${cityRequest}&appid=b46010a9031dddd81c9d4a302cfac47e`
-        )
+        .get<WeatherResponse>(weatherURL)
         .then((response) => {
           setWeatherInfo(response.data);
         })
@@ -196,11 +228,9 @@ function App() {
         });
     };
     // function to get 5 day 3 hourly forecast API using cityRequest prop assigned from input field
-    const getForecast = (cityRequest: string) => {
+    const getForecast = () => {
       axios
-        .get<ForecastResponse>(
-          `http://api.openweathermap.org/data/2.5/forecast?q=${cityRequest}&appid=b46010a9031dddd81c9d4a302cfac47e`
-        )
+        .get<ForecastResponse>(forecastURL)
         .then((response) => {
           setForecastInfo(response.data);
         })
@@ -208,12 +238,12 @@ function App() {
           console.log("error", err);
         });
     };
-    if (searchLocation !== "") {
+    if (state.city !== null) {
       // Execute both calls
-      getWeather(searchLocation);
-      getForecast(searchLocation);
+      getWeather();
+      getForecast();
     }
-  }, [searchLocation]);
+  }, [forecastURL, state.city, weatherURL]);
 
   // because we said that our state can be undefined | T (whatever value when it's not defined)
   // we need to check if it is defined!
@@ -236,7 +266,7 @@ function App() {
   return (
     <MainContainer>
       <AppTitle>WEATHER APP</AppTitle>
-      <button
+      <LoginButton
         onClick={() =>
           update({
             type: !state.authenticated
@@ -245,13 +275,13 @@ function App() {
           })
         }
       >
-        {!state.authenticated ? "log in" : "log out"}
-      </button>
+        {!state.authenticated ? "Log in" : "Log out"}
+      </LoginButton>
       {state.authenticated ? (
         <div>
           <SearchForm
             submit={({ city }) => {
-              setSearchLocation(city);
+              update({ type: "search location set", payload: city });
             }}
           />
           <WeatherCard weatherCardProps={weatherInfo} />
