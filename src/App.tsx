@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { SearchForm } from "./SearchForm";
@@ -13,10 +13,6 @@ import {
   getDay,
 } from "date-fns";
 import { isSameHour } from "date-fns/esm";
-
-// Full Cloud https://images.unsplash.com/photo-1546706872-9c90b8d0c94f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80
-// Partly Cloudy https://images.unsplash.com/photo-1579461182805-98ac523af8f6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2300&q=80
-// Full Sun https://images.unsplash.com/photo-1525490829609-d166ddb58678?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2249&q=80
 
 const MainContainer = styled.div`
   font-family: sans-serif;
@@ -159,6 +155,15 @@ export type ForecastResponse = {
 export type AppState = {
   authenticated: boolean;
   city: string;
+  weatherResponse: WeatherResponse | undefined;
+  forecastResponse: ForecastResponse | undefined;
+};
+
+const initialState: AppState = {
+  authenticated: false,
+  city: "London",
+  weatherResponse: undefined,
+  forecastResponse: undefined,
 };
 
 export type AppEvents =
@@ -169,14 +174,17 @@ export type AppEvents =
       type: "logged out clicked";
     }
   | {
-      type: "search location set";
-      payload: string;
+      type: "search location submitted";
+      payload: { city: string };
+    }
+  | {
+      type: "weather response set";
+      weatherPayload: WeatherResponse;
+    }
+  | {
+      type: "forecast response set";
+      forecastPayload: ForecastResponse;
     };
-
-const initialState = {
-  authenticated: false,
-  city: "London",
-};
 
 const reducer: React.Reducer<AppState, AppEvents> = (state, event) => {
   switch (event?.type) {
@@ -192,10 +200,22 @@ const reducer: React.Reducer<AppState, AppEvents> = (state, event) => {
         authenticated: false,
       };
     }
-    case "search location set": {
+    case "search location submitted": {
       return {
         ...state,
-        city: event.payload,
+        city: event.payload.city,
+      };
+    }
+    case "weather response set": {
+      return {
+        ...state,
+        weatherResponse: event.weatherPayload,
+      };
+    }
+    case "forecast response set": {
+      return {
+        ...state,
+        forecastResponse: event.forecastPayload,
       };
     }
   }
@@ -203,13 +223,6 @@ const reducer: React.Reducer<AppState, AppEvents> = (state, event) => {
 
 function App() {
   const [state, update] = useReducer(reducer, initialState);
-  const [forecastInfo, setForecastInfo] = useState<
-    ForecastResponse | undefined
-  >(undefined);
-  const [weatherInfo, setWeatherInfo] = useState<WeatherResponse | undefined>(
-    undefined
-  );
-  // const [searchLocation, setSearchLocation] = useState("London");
 
   const weatherURL = `http://api.openweathermap.org/data/2.5/weather?q=${state.city}&appid=b46010a9031dddd81c9d4a302cfac47e`;
   const forecastURL = `http://api.openweathermap.org/data/2.5/forecast?q=${state.city}&appid=b46010a9031dddd81c9d4a302cfac47e`;
@@ -221,7 +234,10 @@ function App() {
       axios
         .get<WeatherResponse>(weatherURL)
         .then((response) => {
-          setWeatherInfo(response.data);
+          update({
+            type: "weather response set",
+            weatherPayload: response.data,
+          });
         })
         .catch((err) => {
           console.log("error", err);
@@ -232,7 +248,10 @@ function App() {
       axios
         .get<ForecastResponse>(forecastURL)
         .then((response) => {
-          setForecastInfo(response.data);
+          update({
+            type: "forecast response set",
+            forecastPayload: response.data,
+          });
         })
         .catch((err) => {
           console.log("error", err);
@@ -247,20 +266,21 @@ function App() {
 
   // because we said that our state can be undefined | T (whatever value when it's not defined)
   // we need to check if it is defined!
-  if (!forecastInfo || !weatherInfo) return null;
+  if (!state.weatherResponse || !state.forecastResponse) return null;
 
-  const checkTimeAndFilter = (day: Date) => {
-    return forecastInfo.list.filter(
-      (item) =>
+  // Pass the state.forecastResponse in as an argument to the function
+  const checkTimeAndFilter = (day: Date, res: ForecastResponse) => {
+    return res.list.filter(
+      (item: { dt_txt: string | number | Date }) =>
         isSameDay(new Date(item.dt_txt), day) &&
         isSameHour(new Date(item.dt_txt), day)
     );
   };
 
   const resultDays: Forecast[][] = [
-    checkTimeAndFilter(firstDay),
-    checkTimeAndFilter(secondDay),
-    checkTimeAndFilter(thirdDay),
+    checkTimeAndFilter(firstDay, state.forecastResponse),
+    checkTimeAndFilter(secondDay, state.forecastResponse),
+    checkTimeAndFilter(thirdDay, state.forecastResponse),
   ];
 
   return (
@@ -281,10 +301,10 @@ function App() {
         <div>
           <SearchForm
             submit={({ city }) => {
-              update({ type: "search location set", payload: city });
+              update({ type: "search location submitted", payload: { city } });
             }}
           />
-          <WeatherCard weatherCardProps={weatherInfo} />
+          <WeatherCard weatherCardProps={state.weatherResponse} />
           <ForecastWindow forecasts={resultDays} weekdays={weekdays} />
         </div>
       ) : null}
