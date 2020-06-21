@@ -1,5 +1,4 @@
 import React, { useEffect, useReducer } from "react";
-import axios from "axios";
 import styled from "styled-components";
 import { SearchForm } from "./SearchForm";
 import { WeatherCard } from "./WeatherCard";
@@ -13,6 +12,7 @@ import {
   getDay,
 } from "date-fns";
 import { isSameHour } from "date-fns/esm";
+import { getWeather, getForecast } from "./API";
 
 const MainContainer = styled.div`
   font-family: sans-serif;
@@ -186,7 +186,7 @@ export type AppEvents =
       forecastPayload: ForecastResponse;
     };
 
-const reducer: React.Reducer<AppState, AppEvents> = (state, event) => {
+export const reducer: React.Reducer<AppState, AppEvents> = (state, event) => {
   switch (event?.type) {
     case "logged in clicked": {
       return {
@@ -224,45 +224,25 @@ const reducer: React.Reducer<AppState, AppEvents> = (state, event) => {
 function App() {
   const [state, update] = useReducer(reducer, initialState);
 
-  const weatherURL = `http://api.openweathermap.org/data/2.5/weather?q=${state.city}&appid=b46010a9031dddd81c9d4a302cfac47e`;
-  const forecastURL = `http://api.openweathermap.org/data/2.5/forecast?q=${state.city}&appid=b46010a9031dddd81c9d4a302cfac47e`;
-
-  // call to bouth APIs
   useEffect(() => {
-    // function to get Current Weather API using cityRequest prop assigned from input field
-    const getWeather = () => {
-      axios
-        .get<WeatherResponse>(weatherURL)
-        .then((response) => {
+    async function callToAPIs() {
+      await Promise.all([getWeather(state.city), getForecast(state.city)]).then(
+        (dataResponse) => {
           update({
             type: "weather response set",
-            weatherPayload: response.data,
+            weatherPayload: dataResponse[0],
           });
-        })
-        .catch((err) => {
-          console.log("error", err);
-        });
-    };
-    // function to get 5 day 3 hourly forecast API using cityRequest prop assigned from input field
-    const getForecast = () => {
-      axios
-        .get<ForecastResponse>(forecastURL)
-        .then((response) => {
           update({
             type: "forecast response set",
-            forecastPayload: response.data,
+            forecastPayload: dataResponse[1],
           });
-        })
-        .catch((err) => {
-          console.log("error", err);
-        });
-    };
-    if (state.city !== null) {
-      // Execute both calls
-      getWeather();
-      getForecast();
+        }
+      );
     }
-  }, [forecastURL, state.city, weatherURL]);
+    if (state.city !== null) {
+      callToAPIs();
+    }
+  }, [state.city]);
 
   // because we said that our state can be undefined | T (whatever value when it's not defined)
   // we need to check if it is defined!
