@@ -37,6 +37,9 @@ export const ForecastCard = ({
   forecastCardProps: Forecast[];
   forecastCardTitle: string;
 }) => {
+  const celciusTemp = celciusConvertion(forecastCardProps[0].main.temp).toFixed(
+    0
+  );
   return (
     <ForecastCardStyle>
       <ForecastCardTitle>{forecastCardTitle}</ForecastCardTitle>
@@ -44,9 +47,7 @@ export const ForecastCard = ({
         src={`http://openweathermap.org/img/wn/${forecastCardProps[0].weather[0].icon}@2x.png`}
         alt=""
       />
-      <ForecastCardTemp>
-        {celciusConvertion(forecastCardProps[0].main.temp).toFixed(0)}°C
-      </ForecastCardTemp>
+      <ForecastCardTemp>{celciusTemp}°C</ForecastCardTemp>
     </ForecastCardStyle>
   );
 };

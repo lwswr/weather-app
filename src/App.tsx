@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useReducer } from "react";
-import axios from "axios";
+import React, { useEffect, useReducer } from "react";
 import styled from "styled-components";
 import { SearchForm } from "./SearchForm";
 import { WeatherCard } from "./WeatherCard";
@@ -13,10 +12,7 @@ import {
   getDay,
 } from "date-fns";
 import { isSameHour } from "date-fns/esm";
-
-// Full Cloud https://images.unsplash.com/photo-1546706872-9c90b8d0c94f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80
-// Partly Cloudy https://images.unsplash.com/photo-1579461182805-98ac523af8f6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2300&q=80
-// Full Sun https://images.unsplash.com/photo-1525490829609-d166ddb58678?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2249&q=80
+import { getWeather, getForecast } from "./API";
 
 const MainContainer = styled.div`
   font-family: sans-serif;
@@ -37,6 +33,22 @@ const AppTitle = styled.div`
   font-weight: lighter;
   padding: 50px 5px 10px 10px;
   letter-spacing: 20px;
+`;
+
+const LoginButton = styled.button`
+  font-size: 20px;
+  letter-spacing: 5px;
+  font-weight: 100;
+  border-radius: 15px;
+  border: 2px solid white;
+  padding: 12px 20px;
+  background: rgb(38, 53, 64, 0.7);
+  color: white;
+  transition: 0.2s ease-in-out;
+  &:hover {
+    background: white;
+    color: rgb(38, 53, 64);
+  }
 `;
 
 // Adds amount of days required to date and sets time to 15:00:00
@@ -140,19 +152,41 @@ export type ForecastResponse = {
   };
 };
 
-export type AuthState = {
+export type AppState = {
   authenticated: boolean;
+  city: string;
+  weatherResponse: WeatherResponse | undefined;
+  forecastResponse: ForecastResponse | undefined;
 };
 
-export type AuthEvents =
+const initialState: AppState = {
+  authenticated: false,
+  city: "London",
+  weatherResponse: undefined,
+  forecastResponse: undefined,
+};
+
+export type AppEvents =
   | {
       type: "logged in clicked";
     }
   | {
       type: "logged out clicked";
+    }
+  | {
+      type: "search location submitted";
+      payload: { city: string };
+    }
+  | {
+      type: "weather response set";
+      weatherPayload: WeatherResponse;
+    }
+  | {
+      type: "forecast response set";
+      forecastPayload: ForecastResponse;
     };
 
-const reducer: React.Reducer<AuthState, AuthEvents> = (state, event) => {
+export const reducer: React.Reducer<AppState, AppEvents> = (state, event) => {
   switch (event?.type) {
     case "logged in clicked": {
       return {
@@ -166,77 +200,77 @@ const reducer: React.Reducer<AuthState, AuthEvents> = (state, event) => {
         authenticated: false,
       };
     }
+    case "search location submitted": {
+      return {
+        ...state,
+        city: event.payload.city,
+      };
+    }
+    case "weather response set": {
+      return {
+        ...state,
+        weatherResponse: event.weatherPayload,
+      };
+    }
+    case "forecast response set": {
+      return {
+        ...state,
+        forecastResponse: event.forecastPayload,
+      };
+    }
   }
 };
 
 function App() {
-  const [state, update] = useReducer(reducer, { authenticated: false });
-  // local variables
-  const [forecastInfo, setForecastInfo] = useState<
-    ForecastResponse | undefined
-  >(undefined);
-  const [weatherInfo, setWeatherInfo] = useState<WeatherResponse | undefined>(
-    undefined
-  );
-  const [searchLocation, setSearchLocation] = useState("London");
+  const [state, update] = useReducer(reducer, initialState);
 
-  // call to bouth APIs
   useEffect(() => {
-    // function to get Current Weather API using cityRequest prop assigned from input field
-    const getWeather = (cityRequest: string) => {
-      axios
-        .get<WeatherResponse>(
-          `http://api.openweathermap.org/data/2.5/weather?q=${cityRequest}&appid=b46010a9031dddd81c9d4a302cfac47e`
-        )
-        .then((response) => {
-          setWeatherInfo(response.data);
-        })
-        .catch((err) => {
-          console.log("error", err);
+    async function callToAPIs() {
+      try {
+        const [weatherResponse, forecaseResponse] = await Promise.all([
+          getWeather(state.city),
+          getForecast(state.city),
+        ]);
+        update({
+          type: "weather response set",
+          weatherPayload: weatherResponse,
         });
-    };
-    // function to get 5 day 3 hourly forecast API using cityRequest prop assigned from input field
-    const getForecast = (cityRequest: string) => {
-      axios
-        .get<ForecastResponse>(
-          `http://api.openweathermap.org/data/2.5/forecast?q=${cityRequest}&appid=b46010a9031dddd81c9d4a302cfac47e`
-        )
-        .then((response) => {
-          setForecastInfo(response.data);
-        })
-        .catch((err) => {
-          console.log("error", err);
+        update({
+          type: "forecast response set",
+          forecastPayload: forecaseResponse,
         });
-    };
-    if (searchLocation !== "") {
-      // Execute both calls
-      getWeather(searchLocation);
-      getForecast(searchLocation);
+      } catch (error) {
+        console.log(error);
+      }
     }
-  }, [searchLocation]);
+    if (state.city !== null) {
+      callToAPIs();
+    }
+  }, [state.city]);
 
   // because we said that our state can be undefined | T (whatever value when it's not defined)
   // we need to check if it is defined!
-  if (!forecastInfo || !weatherInfo) return null;
+  if (!state.weatherResponse || !state.forecastResponse) return null;
 
-  const checkTimeAndFilter = (day: Date) => {
-    return forecastInfo.list.filter(
-      (item) =>
+  // Pass the state.forecastResponse in as an argument to the function
+  const checkTimeAndFilter = (day: Date, res: ForecastResponse) => {
+    return res.list.filter(
+      (item: { dt_txt: string | number | Date }) =>
         isSameDay(new Date(item.dt_txt), day) &&
         isSameHour(new Date(item.dt_txt), day)
     );
   };
 
   const resultDays: Forecast[][] = [
-    checkTimeAndFilter(firstDay),
-    checkTimeAndFilter(secondDay),
-    checkTimeAndFilter(thirdDay),
+    checkTimeAndFilter(firstDay, state.forecastResponse),
+    checkTimeAndFilter(secondDay, state.forecastResponse),
+    checkTimeAndFilter(thirdDay, state.forecastResponse),
   ];
 
   return (
     <MainContainer>
       <AppTitle>WEATHER APP</AppTitle>
-      <button
+      <LoginButton
         onClick={() =>
           update({
             type: !state.authenticated
@@ -245,16 +279,16 @@ function App() {
           })
         }
       >
-        {!state.authenticated ? "log in" : "log out"}
-      </button>
+        {!state.authenticated ? "Log in" : "Log out"}
+      </LoginButton>
       {state.authenticated ? (
         <div>
           <SearchForm
             submit={({ city }) => {
-              setSearchLocation(city);
+              update({ type: "search location submitted", payload: { city } });
             }}
           />
-          <WeatherCard weatherCardProps={weatherInfo} />
+          <WeatherCard weatherCardProps={state.weatherResponse} />
           <ForecastWindow forecasts={resultDays} weekdays={weekdays} />
         </div>
       ) : null}
