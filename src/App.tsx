@@ -226,18 +226,22 @@ function App() {
 
   useEffect(() => {
     async function callToAPIs() {
-      await Promise.all([getWeather(state.city), getForecast(state.city)]).then(
-        (dataResponse) => {
-          update({
-            type: "weather response set",
-            weatherPayload: dataResponse[0],
-          });
-          update({
-            type: "forecast response set",
-            forecastPayload: dataResponse[1],
-          });
-        }
-      );
+      try {
+        const [weatherResponse, forecaseResponse] = await Promise.all([
+          getWeather(state.city),
+          getForecast(state.city),
+        ]);
+        update({
+          type: "weather response set",
+          weatherPayload: weatherResponse,
+        });
+        update({
+          type: "forecast response set",
+          forecastPayload: forecaseResponse,
+        });
+      } catch (error) {
+        console.log(error);
+      }
     }
     if (state.city !== null) {
       callToAPIs();
