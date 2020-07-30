@@ -227,17 +227,17 @@ function App() {
   useEffect(() => {
     async function callToAPIs() {
       try {
-        const [weatherResponse, forecaseResponse] = await Promise.all([
+        const [wResponse, fResponse] = await Promise.all([
           getWeather(state.city),
           getForecast(state.city),
         ]);
         update({
           type: "weather response set",
-          weatherPayload: weatherResponse,
+          weatherPayload: wResponse,
         });
         update({
           type: "forecast response set",
-          forecastPayload: forecaseResponse,
+          forecastPayload: fResponse,
         });
       } catch (error) {
         console.log(error);
