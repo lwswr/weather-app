@@ -5,7 +5,7 @@ import { WeatherResponse, ForecastResponse } from "./App";
 export const getWeather = (search: string) => {
   return axios
     .get<WeatherResponse>(
-      `http://api.openweathermap.org/data/2.5/weather?q=${search}&appid=b46010a9031dddd81c9d4a302cfac47e`
+      `https://api.openweathermap.org/data/2.5/weather?q=${search}&appid=b46010a9031dddd81c9d4a302cfac47e`
     )
     .then((response) => {
       return response.data;
@@ -15,7 +15,7 @@ export const getWeather = (search: string) => {
 export const getForecast = (search: string) => {
   return axios
     .get<ForecastResponse>(
-      `http://api.openweathermap.org/data/2.5/forecast?q=${search}&appid=b46010a9031dddd81c9d4a302cfac47e`
+      `https://api.openweathermap.org/data/2.5/forecast?q=${search}&appid=b46010a9031dddd81c9d4a302cfac47e`
     )
     .then((response) => {
       return response.data;
